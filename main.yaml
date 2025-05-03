@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Infra 
+
+Parameters:
+  VpcCidr:
+    Type: String
+    Default: 10.0.0.0/16
+  PublicSubnetCidr:
+    Type: String
+    Default: 10.0.1.0/24
+  PrivateSubnetCidr:
+    Type: String
+    Default: 10.0.2.0/24
+ 
+Resources:
+  VPCStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/infra-cloudformation-bucket-101/vpc.yaml
+      Parameters:
+        VpcCidr: !Ref VpcCidr
+        PublicSubnetCidr: !Ref PublicSubnetCidr
+        PrivateSubnetCidr: !Ref PrivateSubnetCidr
+  
+  RouteTableStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/infra-cloudformation-bucket-101/route-table.yaml
+      Parameters:
+        VpcId: !GetAtt VPCStack.Outputs.VpcId
+        InternetGatewayId: !GetAtt VPCStack.Outputs.InternetGatewayId
+        NatGatewayId: !GetAtt VPCStack.Outputs.NatGatewayId
+        PublicSubnetId: !GetAtt VPCStack.Outputs.PublicSubnetId
+        PrivateSubnetId: !GetAtt VPCStack.Outputs.PrivateSubnetId
+
+Outputs:
+  VpcId:
+    Value: !GetAtt VPCStack.Outputs.VpcId
+  PublicSubnetId:
+    Value: !GetAtt VPCStack.Outputs.PublicSubnetId
+  PrivateSubnetId:
+    Value: !GetAtt VPCStack.Outputs.PrivateSubnetId
+
+    
+
+  
