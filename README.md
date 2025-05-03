@@ -25,9 +25,11 @@ Tài khoản AWS đang hoạt động
 Một S3 bucket để chứa các file .yaml: infra-cloudformation-bucket-101
 
 🛠️ Bước 1: Upload các template lên S3
+```bash
 aws s3 cp main.yaml s3://infra-cloudformation-bucket-101/
 aws s3 cp modules/vpc.yaml s3://infra-cloudformation-bucket-101/
 aws s3 cp modules/route-table.yaml s3://infra-cloudformation-bucket-101/
+```
 
 🚀 Bước 2: Deploy stack từ file main.yaml
 ```bash
