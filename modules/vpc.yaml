@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Subnets, IGW, va Default Security Group for VPC module
+Description: Subnets, IGW, và Default Security Group for VPC module
 
 Parameters:
   VpcCidr:
@@ -52,23 +52,6 @@ Resources:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
 
-  AttachNatGateway:
-    Type: AWS::EC2::EIP
-    Properties:
-      Domain: vpc
-      Tags:
-        - Key: Name
-          Value: !Sub "${AWS::StackName}-nat-eip"
-  
-  NatGateway:
-    Type: AWS::EC2::NatGateway
-    Properties:
-      AllocationId: !GetAtt AttachNatGateway.AllocationId
-      SubnetId: !Ref PublicSubnet
-      Tags:
-        - Key: Name
-          Value: !Sub "${AWS::StackName}-nat-gateway"
-     
   DefaultSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -82,7 +65,7 @@ Resources:
           CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
-          Value: !Sub "${AWS::StackName}-defualt-sg"
+          Value: !Sub "${AWS::StackName}-default-sg"
 
 Outputs:
   VpcId:
@@ -97,10 +80,6 @@ Outputs:
   InternetGatewayId:
     Description: Internet Gateway ID
     Value: !Ref InternetGateway
-  NatGatewayId:
-    Description: Nat Gateway ID
-    Value: !Ref NatGateway
   DefaultSecurityGroupId:
     Description: Default Security Group ID
     Value: !Ref DefaultSecurityGroup
-  
