@@ -11,7 +11,7 @@ Parameters:
     Default: my-keypair
   AmiId:
     Type: AWS::EC2::Image::Id
-    Default: /aws/service/canonical/ubuntu/server/22.04/stable/current/amd64/hvm/ebs-gp2/ami-id
+    Default: ami-0c7217cdde317cfec
   PublicSGId:
     Type: AWS::EC2::SecurityGroup::Id
   PrivateSGId:
