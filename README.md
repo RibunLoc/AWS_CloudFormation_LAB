@@ -14,9 +14,9 @@ project/
 ├── modules/
 │   ├── vpc.yaml                # Module VPC và subnet
 │   ├── route-table.yaml        # Module Route Tables
-│   ├── nat-gateway.yaml        # Module NAT Gateway
-│   ├── security-groups.yaml    # Module Security Groups
-│   ├── ec2-instances.yaml      # Module EC2 Instances
+│   ├── nat.yaml                # Module NAT Gateway
+│   ├── security_groups.yaml    # Module Security Groups
+│   ├── ec2.yaml                # Module EC2 Instances
 ├── tests/
 │   └── test_templates.py       # Script kiểm tra template
 ├── scripts/
