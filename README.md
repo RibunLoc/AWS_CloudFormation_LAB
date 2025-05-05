@@ -17,12 +17,12 @@ project/
 │   ├── nat-gateway.yaml        # Module NAT Gateway
 │   ├── security-groups.yaml    # Module Security Groups
 │   ├── ec2-instances.yaml      # Module EC2 Instances
-│   └── main.yaml               # Template chính để nối các module
 ├── tests/
 │   └── test_templates.py       # Script kiểm tra template
 ├── scripts/
 │   ├── deploy.sh               # Script triển khai
 │   └── cleanup.sh              # Script dọn dẹp tài nguyên
+├── main.yaml                   # Template chính để nối các module
 └── README.md                   # Hướng dẫn sử dụng
 ```
 🧰 Yêu cầu
