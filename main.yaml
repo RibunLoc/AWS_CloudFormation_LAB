@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Infra 
+Description: Main CloudFormation template - orchestrates all module stacks
 
 Parameters:
   VpcCidr:
@@ -11,36 +11,69 @@ Parameters:
   PrivateSubnetCidr:
     Type: String
     Default: 10.0.2.0/24
- 
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: my-keypair
+  AmiId:
+    Type: AWS::EC2::Image::Id
+    Default: /aws/service/canonical/ubuntu/server/22.04/stable/current/amd64/hvm/ebs-gp2/ami-id
+
 Resources:
   VPCStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/infra-cloudformation-bucket-101/vpc.yaml
+      TemplateURL: https://infra-cloudformation-bucket-102.s3.us-east-1.amazonaws.com/modules/vpc.yaml
       Parameters:
         VpcCidr: !Ref VpcCidr
         PublicSubnetCidr: !Ref PublicSubnetCidr
         PrivateSubnetCidr: !Ref PrivateSubnetCidr
-  
-  RouteTableStack:
+
+  NATStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/infra-cloudformation-bucket-101/route-table.yaml
+      TemplateURL: https://infra-cloudformation-bucket-102.s3.us-east-1.amazonaws.com/modules/nat.yaml
+      Parameters:
+        PublicSubnetId: !GetAtt VPCStack.Outputs.PublicSubnetId
+
+  SecurityGroupStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://infra-cloudformation-bucket-102.s3.us-east-1.amazonaws.com/modules/security_group.yaml
+      Parameters:
+        VpcId: !GetAtt VPCStack.Outputs.VpcId
+
+  RouteTableStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: NATStack
+    Properties:
+      TemplateURL: https://infra-cloudformation-bucket-102.s3.us-east-1.amazonaws.com/modules/route-table.yaml
       Parameters:
         VpcId: !GetAtt VPCStack.Outputs.VpcId
         InternetGatewayId: !GetAtt VPCStack.Outputs.InternetGatewayId
-        NatGatewayId: !GetAtt VPCStack.Outputs.NatGatewayId
+        NatGatewayId: !GetAtt NATStack.Outputs.NatGatewayId
         PublicSubnetId: !GetAtt VPCStack.Outputs.PublicSubnetId
         PrivateSubnetId: !GetAtt VPCStack.Outputs.PrivateSubnetId
 
+  EC2Stack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: RouteTableStack
+    Properties:
+      TemplateURL: https://infra-cloudformation-bucket-102.s3.us-east-1.amazonaws.com/modules/ec2.yaml
+      Parameters:
+        PublicSubnetId: !GetAtt VPCStack.Outputs.PublicSubnetId
+        PrivateSubnetId: !GetAtt VPCStack.Outputs.PrivateSubnetId
+        PublicSGId: !GetAtt SecurityGroupStack.Outputs.PublicSGId
+        PrivateSGId: !GetAtt SecurityGroupStack.Outputs.PrivateSGId
+        KeyName: !Ref KeyName
+        AmiId: !Ref AmiId
+
 Outputs:
   VpcId:
+    Description: VPC ID
     Value: !GetAtt VPCStack.Outputs.VpcId
   PublicSubnetId:
+    Description: Public Subnet ID
     Value: !GetAtt VPCStack.Outputs.PublicSubnetId
   PrivateSubnetId:
+    Description: Private Subnet ID
     Value: !GetAtt VPCStack.Outputs.PrivateSubnetId
-
-    
-
-  
