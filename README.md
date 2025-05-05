@@ -10,10 +10,20 @@
 
 ```bash
 .
-├── main.yaml                # Root stack gọi các stack con
+project/
 ├── modules/
-│   ├── vpc.yaml            # Tạo VPC, Subnet, IGW, NAT Gateway, SG
-│   └── route-table.yaml    # Tạo Route Tables và gán với Subnet
+│   ├── vpc.yaml                # Module VPC và subnet
+│   ├── route-table.yaml        # Module Route Tables
+│   ├── nat-gateway.yaml        # Module NAT Gateway
+│   ├── security-groups.yaml    # Module Security Groups
+│   ├── ec2-instances.yaml      # Module EC2 Instances
+├── tests/
+│   └── test_templates.py       # Script kiểm tra template
+├── scripts/
+│   ├── deploy.sh               # Script triển khai
+│   └── cleanup.sh              # Script dọn dẹp tài nguyên
+├── main.yaml                   # Template chính để nối các module
+└── README.md                   # Hướng dẫn sử dụng
 ```
 🧰 Yêu cầu
 Tài khoản AWS đang hoạt động
