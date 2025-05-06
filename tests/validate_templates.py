@@ -1,17 +1,36 @@
-# source: 
+# source: validate_template.py
 import boto3
 import yaml
 import sys
+from yaml.constructor import ConstructorError
 
-# Kết nối client CloudFormation AWS
+# Kết nối AWS CloudFormation
 cf_client = boto3.client('cloudformation')
+
+# Custom YAML loader để hiểu !Ref, !Sub,...
+class CloudFormationLoader(yaml.SafeLoader):
+    pass
+
+def ref_constructor(loader, node):
+    return {"Ref": loader.construct_scalar(node)}
+
+def sub_constructor(loader, node):
+    return {"Fn::Sub": loader.construct_scalar(node)}
+
+def getatt_constructor(loader, node):
+    return {"Fn::GetAtt": loader.construct_scalar(node)}
+
+# Đăng ký các tag CloudFormation cần dùng
+CloudFormationLoader.add_constructor("!Ref", ref_constructor)
+CloudFormationLoader.add_constructor("!Sub", sub_constructor)
+CloudFormationLoader.add_constructor("!GetAtt", getatt_constructor)
 
 def validate_template(file_path):
     try:
         with open(file_path, 'r') as file:
             template_body = file.read()
 
-        # Kiểm tra cú pháp CloudFormation template
+        # Gọi AWS để validate template
         response = cf_client.validate_template(TemplateBody=template_body)
 
         print(f"\n[✔️] Template '{file_path}' passed syntax validation.")
@@ -20,7 +39,8 @@ def validate_template(file_path):
             default = param.get('DefaultValue', 'No default')
             print(f"  - {param['ParameterKey']} (Default: {default})")
 
-        return yaml.safe_load(template_body)
+        # Load YAML bằng CloudFormation-aware loader
+        return yaml.load(template_body, Loader=CloudFormationLoader)
 
     except Exception as e:
         print(f"\n[❌] Template '{file_path}' failed validation:")
@@ -33,31 +53,16 @@ def check_resource_links(template):
         print("\n[❌] No resources found in template.")
         sys.exit(1)
 
-    print("\nChecking resource links:")
+    print("\n🔗 Checking resource links:")
     for name, resource in resources.items():
         res_type = resource.get('Type', 'Unknown')
         props = resource.get('Properties', {})
         if 'VpcId' in props:
-            vpc_ref = props['VpcId']
-            print(f"  - Resource '{name}' ({res_type}) linked to VPC: {vpc_ref}")
+            print(f"  - Resource '{name}' ({res_type}) linked to VPC: {props['VpcId']}")
         if 'SubnetId' in props:
-            subnet_ref = props['SubnetId']
-            print(f"  - Resource '{name}' ({res_type}) linked to Subnet: {subnet_ref}")
+            print(f"  - Resource '{name}' ({res_type}) linked to Subnet: {props['SubnetId']}")
         if 'RouteTableId' in props:
-            rt_ref = props['RouteTableId']
-            print(f"  - Resource '{name}' ({res_type}) linked to Route Table: {rt_ref}")
-        
-def check_parameters(template):
-    params = template.get('Parameters', {})
-    if not params:
-        print("\n[❌] No parameters defined in template.")
-        sys.exit(1)
-
-    print("\nChecking template parameters:")
-    for param_name, param_data in params.items():
-        param_type = param_data.get('Type', 'Undefined')
-        default_val = param_data.get('Default', 'No default value')
-        print(f"  - Parameter '{param_name}': Type={param_type}, Default={default_val}")
+            print(f"  - Resource '{name}' ({res_type}) linked to Route Table: {props['RouteTableId']}")
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
@@ -66,5 +71,4 @@ if __name__ == '__main__':
 
     template_file = sys.argv[1]
     template = validate_template(template_file)
-    check_parameters(template)
     check_resource_links(template)

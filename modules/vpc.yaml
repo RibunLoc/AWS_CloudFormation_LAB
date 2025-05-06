@@ -1,13 +1,16 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Subnets, IGW, và Default Security Group for VPC module
+Description: Subnets, IGW, and Default Security Group for VPC module
 
 Parameters:
   VpcCidr:
     Type: String
+    Default: 10.0.0.0/16
   PublicSubnetCidr:
     Type: String
+    Default: 10.0.1.0/24
   PrivateSubnetCidr:
     Type: String
+    Default: 10.0.2.0/24
 
 Resources:
   VPC:
