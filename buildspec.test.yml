@@ -1,0 +1,11 @@
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+    commands:
+      - pip install taskcat
+  build:
+    commands:
+      - echo "Bắt đầu Taskcat tests..."
+      - taskcat test run
+

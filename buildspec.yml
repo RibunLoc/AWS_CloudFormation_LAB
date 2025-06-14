@@ -8,10 +8,8 @@ phases:
       - pip install cfn-lint taskcat
   build:
     commands:
-      - echo "Linting templates..."
+      - echo "Bắt đầu build..."
       - cfn-lint modules/main.yaml
-      - echo "Running Taskcat tests..."
-      - taskcat test run
 artifacts:
   files:
     - modules/*.yaml
