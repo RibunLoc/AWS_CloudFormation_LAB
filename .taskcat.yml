@@ -1,5 +1,5 @@
 project:
-  name: my-cfn-test
+  name: nt548-lab2
   s3_bucket: terraform-task-management-1111
   regions:
     - us-east-1
