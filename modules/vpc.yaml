@@ -58,7 +58,7 @@ Resources:
   DefaultSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Sub "Default Security Group"
+      GroupDescription: "Default Security Group"
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: -1

@@ -17,7 +17,7 @@ Parameters:
     Default: 10.0.2.0/24
   KeyName:
     Type: AWS::EC2::KeyPair::KeyName
-    Default: my-keypair
+    Default: sshkey
   AmiId:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/canonical/ubuntu/server/22.04/stable/current/amd64/hvm/ebs-gp2/ami-id
@@ -48,7 +48,6 @@ Resources:
 
   RouteTableStack:
     Type: AWS::CloudFormation::Stack
-    DependsOn: NATStack
     Properties:
       TemplateURL: !Sub "https://${BucketName}.s3.${AWS::Region}.amazonaws.com/modules/route-table.yaml"
       Parameters:

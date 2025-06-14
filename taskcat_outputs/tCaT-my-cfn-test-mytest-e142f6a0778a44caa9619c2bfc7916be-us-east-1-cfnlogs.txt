@@ -1,0 +1,21 @@
+-----------------------------------------------------------------------------
+Region: us-east-1
+StackName: tCaT-my-cfn-test-mytest-e142f6a0778a44caa9619c2bfc7916be
+*****************************************************************************
+ResourceStatusReason:  
+The following resource(s) failed to create: [VPCStack].
+*****************************************************************************
+*****************************************************************************
+Events:  
+TimeStamp                         ResourceStatus      ResourceType                LogicalResourceId                                         ResourceStatusReason
+--------------------------------  ------------------  --------------------------  --------------------------------------------------------  ---------------------------------------------------------------------------------------------
+2025-06-14 07:38:59.586000+00:00  CREATE_FAILED       AWS::CloudFormation::Stack  tCaT-my-cfn-test-mytest-e142f6a0778a44caa9619c2bfc7916be  The following resource(s) failed to create: [VPCStack].
+2025-06-14 07:38:59.092000+00:00  CREATE_FAILED       AWS::CloudFormation::Stack  VPCStack                                                  S3 error: Access Denied
+                                                                                                                                            For more information check http://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html
+2025-06-14 07:38:58.629000+00:00  CREATE_IN_PROGRESS  AWS::CloudFormation::Stack  VPCStack
+2025-06-14 07:38:56.384000+00:00  CREATE_IN_PROGRESS  AWS::CloudFormation::Stack  tCaT-my-cfn-test-mytest-e142f6a0778a44caa9619c2bfc7916be  User Initiated
+*****************************************************************************
+-----------------------------------------------------------------------------
+Tested on: Saturday, 14. June 2025 02:40PM
+-----------------------------------------------------------------------------
+
