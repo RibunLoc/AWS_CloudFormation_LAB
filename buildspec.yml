@@ -10,6 +10,8 @@ phases:
     commands:
       - echo "Bắt đầu build..."
       - cfn-lint modules/main.yaml
+      - echo "Bắt đầu Taskcat tests..."
+      - taskcat test run
 artifacts:
   files:
     - modules/*.yaml
